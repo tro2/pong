@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{13ddd496-ccd0-4a60-96c1-81bc1d8cfde5}</ProjectGuid>
-    <RootNamespace>GameTemplateApp</RootNamespace>
+    <ProjectGuid>{f2bbb07f-924d-44d9-995b-1a74a3d753af}</ProjectGuid>
+    <RootNamespace>NathanPongApp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -124,7 +124,8 @@
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)..\Dependencies\SDL\lib\$(Platform)\SDL2.dll" "$(OutDir)" /q/r/y
 xcopy "$(ProjectDir)..\Dependencies\SDL_image\lib\$(Platform)\SDL2_image.dll" "$(OutDir)" /q/r/y
-xcopy "$(ProjectDir)..\Dependencies\SDL_mixer\lib\$(Platform)\SDL2_mixer.dll" "$(OutDir)" /q/r/y</Command>
+xcopy "$(ProjectDir)..\Dependencies\SDL_mixer\lib\$(Platform)\SDL2_mixer.dll" "$(OutDir)" /q/r/y
+xcopy "$(ProjectDir)..\Resources\*" "$(OutDir)" /q/r/y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

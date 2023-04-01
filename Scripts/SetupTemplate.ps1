@@ -4,20 +4,20 @@
 $solutionDir = Join-Path -Path $PSScriptRoot -ChildPath ".."
 Set-Location -Path $solutionDir
 
-# Check if GameTemplate.sln exists and exit otherwise
-if (-not(Test-Path -Path "GameTemplate.sln" -PathType Leaf)) {
-	Write-Host "Fatal error: GameTemplate.sln not found"
+# Check if NathanPong.sln exists and exit otherwise
+if (-not(Test-Path -Path "NathanPong.sln" -PathType Leaf)) {
+	Write-Host "Fatal error: NathanPong.sln not found"
 	exit 1
 }
 
-# Check if GameTemplateApp\ exists and exit otherwise
-if (-not(Test-Path -Path "GameTemplateApp" -PathType Container)) {
-	Write-Host "Fatal error: GameTemplateApp\ not found"
+# Check if NathanPongApp\ exists and exit otherwise
+if (-not(Test-Path -Path "NathanPongApp" -PathType Container)) {
+	Write-Host "Fatal error: NathanPongApp\ not found"
 	exit 1
 }
 
-# Get GameTemplateApp's project GUID
-$currentGuid = "13ddd496-ccd0-4a60-96c1-81bc1d8cfde5"
+# Get NathanPongApp's project GUID
+$currentGuid = "f2bbb07f-924d-44d9-995b-1a74a3d753af"
 $newGuid = New-Guid
 
 # Get new project name
@@ -32,18 +32,18 @@ Write-Host "New GUID: $newGuid"
 
 # Rename solution file
 $newSolutionFileName = "$newName.sln"
-Rename-Item -Path "GameTemplate.sln" -NewName "$newSolutionFileName"
+Rename-Item -Path "NathanPong.sln" -NewName "$newSolutionFileName"
 
 # Rename project directory
 $newProjectDirectoryName = "$newNameApp"
-Rename-Item -Path "GameTemplateApp" -NewName "$newProjectDirectoryName"
+Rename-Item -Path "NathanPongApp" -NewName "$newProjectDirectoryName"
 
 # Rename project files
-Rename-Item -Path "$newProjectDirectoryName\GameTemplateApp.vcxproj" -NewName "$newNameApp.vcxproj"
-Rename-Item -Path "$newProjectDirectoryName\GameTemplateApp.vcxproj.filters" -NewName "$newNameApp.vcxproj.filters"
+Rename-Item -Path "$newProjectDirectoryName\NathanPongApp.vcxproj" -NewName "$newNameApp.vcxproj"
+Rename-Item -Path "$newProjectDirectoryName\NathanPongApp.vcxproj.filters" -NewName "$newNameApp.vcxproj.filters"
 
-if (Test-Path -Path "$newProjectDirectoryName\GameTemplateApp.vcxproj.user") {
-	Rename-Item -Path "$newProjectDirectoryName\GameTemplateApp.vcxproj.user" -NewName "$newNameApp.vcxproj.user"
+if (Test-Path -Path "$newProjectDirectoryName\NathanPongApp.vcxproj.user") {
+	Rename-Item -Path "$newProjectDirectoryName\NathanPongApp.vcxproj.user" -NewName "$newNameApp.vcxproj.user"
 }
 
 ########################################################################################################################
@@ -70,7 +70,7 @@ if (Test-Path -Path "$newProjectDirectoryName\GameTemplateApp.vcxproj.user") {
 # 		$content = Get-Content $a;
 # 
 # 		$content |
-# 		ForEach-Object { $_ -replace "GameTemplate", "$newName" } | 
+# 		ForEach-Object { $_ -replace "NathanPong", "$newName" } | 
 # 		set-content $a
 # 	}
 # }
@@ -82,7 +82,7 @@ if (Test-Path -Path "$newProjectDirectoryName\GameTemplateApp.vcxproj.user") {
 # 	$a = $_.fullname;
 # 	$content = Get-Content $a;
 # 	
-# 	if ($content.Contains("GameTemplate")) {
+# 	if ($content.Contains("NathanPong")) {
 # 		$content |
 # 		ForEach-Object { $_ -replace "$currentGuid", "$newName" } | 
 # 		set-content $a

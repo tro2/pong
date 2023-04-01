@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameTemplateApp", "GameTemplateApp\GameTemplateApp.vcxproj", "{13DDD496-CCD0-4A60-96C1-81BC1D8CFDE5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NathanPongApp", "NathanPongApp\NathanPongApp.vcxproj", "{f2bbb07f-924d-44d9-995b-1a74a3d753af}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{39397E44-724C-4BC4-BC5D-16EB9614695D}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,10 +16,10 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{13DDD496-CCD0-4A60-96C1-81BC1D8CFDE5}.Debug|x64.ActiveCfg = Debug|x64
-		{13DDD496-CCD0-4A60-96C1-81BC1D8CFDE5}.Debug|x64.Build.0 = Debug|x64
-		{13DDD496-CCD0-4A60-96C1-81BC1D8CFDE5}.Release|x64.ActiveCfg = Release|x64
-		{13DDD496-CCD0-4A60-96C1-81BC1D8CFDE5}.Release|x64.Build.0 = Release|x64
+		{f2bbb07f-924d-44d9-995b-1a74a3d753af}.Debug|x64.ActiveCfg = Debug|x64
+		{f2bbb07f-924d-44d9-995b-1a74a3d753af}.Debug|x64.Build.0 = Debug|x64
+		{f2bbb07f-924d-44d9-995b-1a74a3d753af}.Release|x64.ActiveCfg = Release|x64
+		{f2bbb07f-924d-44d9-995b-1a74a3d753af}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
