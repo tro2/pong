@@ -16,7 +16,7 @@ LTexture::~LTexture()
 	free();
 }
 
-bool LTexture::loadFromFile(SDL_Renderer* renderer, std::string path)
+bool LTexture::loadFromFile(std::string path)
 {
 	// remove possible preexisting texture
 	free();
@@ -33,7 +33,7 @@ bool LTexture::loadFromFile(SDL_Renderer* renderer, std::string path)
 		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
 
 		// convert surface to texture
-		mTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+		mTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
 		if (mTexture == NULL)
 		{
 			std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
@@ -52,7 +52,7 @@ bool LTexture::loadFromFile(SDL_Renderer* renderer, std::string path)
 	return mTexture != NULL;
 }
 
-bool LTexture::loadFromRenderedText(SDL_Renderer* renderer, TTF_Font* font, std::string textureText, SDL_Color textColor)
+bool LTexture::loadFromRenderedText(TTF_Font* font, std::string textureText, SDL_Color textColor)
 {
 	// remove possible preexisting texture
 	free();
@@ -66,7 +66,7 @@ bool LTexture::loadFromRenderedText(SDL_Renderer* renderer, TTF_Font* font, std:
 	else
 	{
 		// convert surface to texture
-		mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
 		if (mTexture == NULL)
 		{
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
@@ -112,7 +112,7 @@ void LTexture::setAlpha(Uint8 alpha)
 	SDL_SetTextureAlphaMod(mTexture, alpha);
 }
 
-void LTexture::render(SDL_Renderer* renderer, int x, int y, SDL_Rect* clip) const
+void LTexture::render(int x, int y, SDL_Rect* clip) const
 {
 	// define rendering space and render
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -124,7 +124,7 @@ void LTexture::render(SDL_Renderer* renderer, int x, int y, SDL_Rect* clip) cons
 		renderQuad.h = clip->h;
 	}
 
-	SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
+	SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
 }
 
 int LTexture::getWidth() const

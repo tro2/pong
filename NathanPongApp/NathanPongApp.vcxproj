@@ -158,12 +158,14 @@ xcopy "$(ProjectDir)..\Resources\*" "$(OutDir)" /q/r/y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\Paddle.cpp" />
     <ClCompile Include="src\LTexture.cpp" />
     <ClCompile Include="src\LTimer.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Ball.h" />
     <ClInclude Include="src\Paddle.h" />
     <ClInclude Include="src\LTexture.h" />
     <ClInclude Include="src\LTimer.h" />

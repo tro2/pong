@@ -1,10 +1,10 @@
 #include "Paddle.h"
 
-Paddle::Paddle()
+Paddle::Paddle(int posX, int posY)
 {
 	// set the inital position
-	mPosX = 0;
-	mPosY = 0;
+	mPosX = posX;
+	mPosY = posY;
 
 	// set collision box dimension
 	mCollider = { mPosX, mPosY, PADDLE_WIDTH, PADDLE_HEIGHT };
@@ -13,26 +13,11 @@ Paddle::Paddle()
 void Paddle::moveUp(const SDL_Rect& topWall)
 {
 	// move up/down
-	mPosY += PADDLE_VELOCITY;
-	mCollider.y = mPosY;
-
-	// check collision or out of bounds
-	if ((mPosY < 0) || checkCollision(mCollider, topWall))
-	{
-		// move back
-		mPosY -= PADDLE_VELOCITY;
-		mCollider.y = mPosY;
-	}
-}
-
-void Paddle::moveDown(const SDL_Rect& bottomWall)
-{
-	// move down
 	mPosY -= PADDLE_VELOCITY;
 	mCollider.y = mPosY;
 
 	// check collision or out of bounds
-	if ((mPosY + PADDLE_HEIGHT > SCREEN_HEIGHT) || checkCollision(mCollider, /*bottom wall*/))
+	if ((mPosY < 0) || checkCollision(mCollider, topWall))
 	{
 		// move back
 		mPosY += PADDLE_VELOCITY;
@@ -40,10 +25,33 @@ void Paddle::moveDown(const SDL_Rect& bottomWall)
 	}
 }
 
-void Paddle::render(SDL_Renderer* renderer, const LTexture& gPaddleTexture)
+void Paddle::moveDown(const SDL_Rect& bottomWall)
+{
+	// move down
+	mPosY += PADDLE_VELOCITY;
+	mCollider.y = mPosY;
+
+	// check collision or out of bounds
+	if ((mPosY + PADDLE_HEIGHT > SCREEN_HEIGHT) || checkCollision(mCollider, bottomWall))
+	{
+		// move back
+		mPosY -= PADDLE_VELOCITY;
+		mCollider.y = mPosY;
+	}
+}
+
+void Paddle::executeAIMove(const Ball& ball)
+{
+	// TODO code AI behavior
+}
+
+void Paddle::render(/*const LTexture& gPaddleTexture*/)
 {
 	// show the Paddle
-	gPaddleTexture.render(renderer, mPosX, mPosY);
+	// gPaddleTexture.render(mPosX, mPosY);
+
+	// simple rect based rendering
+	SDL_RenderFillRect(gRenderer, &mCollider);
 }
 
 bool Paddle::checkCollision(const SDL_Rect& a, const SDL_Rect& b)
@@ -95,4 +103,19 @@ bool Paddle::checkCollision(const SDL_Rect& a, const SDL_Rect& b)
 
 	// both horizontal and vertical bounds overlap
 	return true;
+}
+
+SDL_Rect Paddle::getCollider() const
+{
+	return mCollider;
+}
+
+void Paddle::setPosition(int x, int y)
+{
+	mPosX = x;
+	mPosY = y;
+
+	// update collider as well
+	mCollider.x = mPosX;
+	mCollider.y = mPosY;
 }

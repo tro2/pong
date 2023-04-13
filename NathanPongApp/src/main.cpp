@@ -1,39 +1,60 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
-#include <iostream>
 #include "LTexture.h"
 #include "LTimer.h"
 #include "Paddle.h"
+#include <iostream>
 #include <sstream>
+#include <string>
+#include <cstdlib>
+#include <time.h>
+
+// ==============================================
+// GLOBAL VARIABLES
 
 // window size
 extern const int SCREEN_WIDTH = 720;
 extern const int SCREEN_HEIGHT = 480;
 
-// fps cap
-const int SCREEN_FPS = 60;
-const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
+// window
+SDL_Window* gWindow = NULL;
+
+// window renderer
+extern SDL_Renderer* gRenderer = NULL;
+
+// text font
+TTF_Font* gFontRegular;
+TTF_Font* gFontBoldLarge;
+
+// text color / wall color
+SDL_Color blackColor = { 0,0,0,0 };
+
+// test text texture
+LTexture textTexture;
+LTexture ballTexture;
+LTexture victoryTextTexture;
+LTexture restartTextTexture;
+LTexture scoreTextTexture;
+
+// ==============================================
+// FUNCTIONS
 
 // Starts up SDL and creates a window
-bool init(SDL_Window* gWindow, SDL_Renderer* gRenderer);
+bool init();
 
 // Loads media
 bool loadMedia();
 
 // Frees Media and shuts down SDL
-void close(SDL_Window* gWindow, SDL_Renderer* gRenderer);
+void close();
+
+//TODO implement time-based delta movements
 
 int main(int, char**)
 {
-    // window
-    SDL_Window* gWindow = NULL;
-
-    // window renderer
-    SDL_Renderer* gRenderer = NULL;
-    
     // Start SDL and create window
-    if (!init(gWindow, gRenderer))
+    if (!init())
     {
         std::cout << "Failed to init!" << std::endl;
     }
@@ -46,7 +67,11 @@ int main(int, char**)
         }
         else
         {
-            // FLAGS ==========================================
+            const int WALL_HEIGHT = 40;
+            const int GOAL_BOX_WIDTH = 1;
+            const int TARGET_GOALS = 3;
+            
+            // FLAGS ============================
             // Main loop flag
             bool quit = false;
 
@@ -56,22 +81,62 @@ int main(int, char**)
             // game victory flag
             bool victory = false;
 
+            // OBJECTS ==========================
+
+            // Player paddles
+            Paddle playerPaddle(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+            Paddle aiPaddle(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+
+            // create ball in center of screen
+            Ball gBall((SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
+
+            // top and bottom walls
+            SDL_Rect topWall = { 0, 0, SCREEN_WIDTH, WALL_HEIGHT };
+            SDL_Rect bottomWall = { 0, SCREEN_HEIGHT - WALL_HEIGHT, SCREEN_WIDTH, WALL_HEIGHT };
+
+            // goal boxes
+            SDL_Rect leftGoal = { 0, 0, GOAL_BOX_WIDTH, SCREEN_HEIGHT };
+            SDL_Rect rightGoal = { SCREEN_WIDTH- GOAL_BOX_WIDTH, 0, GOAL_BOX_WIDTH, SCREEN_HEIGHT };
+
+            // OTHER ============================
+            
+            // Score
+            int aiScore = 0;
+            int playerScore = 0;
+
+            // Score Text
+            std::stringstream scoreText;
+            scoreText << "Player: 0 AI: 0";
+
             // Event handler
             SDL_Event e;
 
-            // OBJECTS ========================================
-            // Player paddles
-            Paddle playerPaddle;
-            Paddle aiPaddle;
+            // ==============================
+                // GAME LOOP
 
-            // ball
+                // handle inputs
+                    // r - restart
+                    // up and down arrow to move block
+                    // spacebar to start
 
-            // top and bottom walls
-            SDL_Rect topWall = { 0,0,SCREEN_WIDTH,40 };
-            SDL_Rect bottomWall = { 0,SCREEN_HEIGHT-40,SCREEN_WIDTH,40 };
+                // create ai "input"
 
-            // goal boxes
+                // physics
+                    // move paddles
+                    // check paddles
+                        // if paddle is running into top or bottom walls
 
+                    // move ball
+                    // check ball
+                        // check if ball is touching paddle
+                            // determine where paddle is touching, divide into paddle into thirds
+                        // check if ball is in goal
+                            // if yes, increment goal tick and reset game to start next round
+
+                // render
+                    // top and bottom walls
+                    // ball
+                    // player bars
 
             // core loop
             while (!quit)
@@ -92,86 +157,157 @@ int main(int, char**)
                 const Uint8* currentKeyboardState = SDL_GetKeyboardState(NULL);
 
                 // if game needs to be restarted
-                if (currentKeyboardState[SDLK_r])
+                if (currentKeyboardState[SDL_SCANCODE_R])
                 {
                     // restart flags
                     gameStarted = false;
                     victory = false;
 
-                    // render game at the start
+                    // reset all positions
+                    playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    gBall.setPosition((SCREEN_WIDTH - Paddle::PADDLE_WIDTH) / 2, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+
+                    // restart goal count
+                    aiScore = 0;
+                    playerScore = 0;
                 }
                 // game is stopped and needs to start
-                else if (!gameStarted && !victory && currentKeyboardState[SDLK_SPACE])
+                else if (!gameStarted && !victory && currentKeyboardState[SDL_SCANCODE_SPACE])
                 {
                     // start game
                     gameStarted = true;
 
-                    // launch ball at random angle
-                    
+                    printf("Game started");
+
+                    gBall.launch();
+
                 }
                 // game is in play
-                else if (gameStarted && !victory)
+                if (gameStarted && !victory)
                 {
                     // look at player inputs
-                    if (currentKeyboardState[SDLK_UP])
+                    if (currentKeyboardState[SDL_SCANCODE_UP])
                     {
                         playerPaddle.moveUp(topWall);
                     }
 
-                    if (currentKeyboardState[SDLK_DOWN])
+                    if (currentKeyboardState[SDL_SCANCODE_DOWN])
                     {
                         playerPaddle.moveDown(bottomWall);
                     }
 
                     // ai inputs
+                    aiPaddle.executeAIMove(gBall);
+
                     // move ball and check for collisions
+                    gBall.move(topWall, bottomWall, playerPaddle.getCollider(), aiPaddle.getCollider());
 
+                    // check score achieved
+                    switch (gBall.checkGoal(leftGoal, rightGoal))
+                    {
+                    case -1:
+                    {
+                        printf("Score");
+
+                        aiScore++;
+                        if (aiScore == TARGET_GOALS)
+                        {
+                            victoryTextTexture.loadFromRenderedText(gFontBoldLarge, "AI Wins!", blackColor);
+                            victory = true;
+                        }
+
+                        // increment score counter texture
+                        scoreText.str("");
+                        scoreText << "Player: " << playerScore << " AI: " << aiScore;
+                        scoreTextTexture.loadFromRenderedText(gFontRegular, scoreText.str().c_str(), blackColor);
+
+                        // restart game
+                        // restart flags
+                        gameStarted = false;
+
+                        // reset all positions
+                        playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                        aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                        gBall.setPosition((SCREEN_WIDTH - Paddle::PADDLE_WIDTH) / 2, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+
+                        break;
+                    }
+                    case 1:
+                    {
+                        playerScore++;
+                        if (playerScore == TARGET_GOALS)
+                        {
+                            victoryTextTexture.loadFromRenderedText(gFontBoldLarge, "Player Wins!", blackColor);
+                            victory = true;
+                        }
+
+                        // increment score counter texture
+                        scoreText.str("");
+                        scoreText << "Player: " << playerScore << " AI: " << aiScore;
+                        scoreTextTexture.loadFromRenderedText(gFontRegular, scoreText.str().c_str(), blackColor);
+
+                        // restart game
+                        // restart flags
+                        gameStarted = false;
+
+                        // reset all positions
+                        playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                        aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                        gBall.setPosition((SCREEN_WIDTH - Paddle::PADDLE_WIDTH) / 2, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+
+                        break;
+                    }
+                    default: break;
+                    }
                 }
-                // game has finished
-                else if (gameStarted && victory)
-                {
-                    // show "press r to restart" on top of current game
-                }
 
-                // handle inputs
-                    // r - restart
-                    // up and down arrow to move block
-                    // spacebar to start
-
-                // create ai "input"
-
-                // physics
-                    // move paddles
-                    // check paddles
-                        // if paddle is running into top or bottom walls
-                    
-                    // move ball
-                    // check ball
-                        // check if ball is touching paddle
-                            // determine where paddle is touching, divide into paddle into thirds
-                        // check if ball is in goal
-                            // if yes, render success screen and pause all other physics
-
-
-
-                // render
-                    // top and bottom walls
+                    // render
                     // ball
-                    // player bars
+                    gBall.render(ballTexture);
 
-                // Update screen
-                SDL_RenderPresent(gRenderer);
+                    // paddles
+                    SDL_SetRenderDrawColor(gRenderer, 0, 0, 255, 0);
+                    playerPaddle.render();
+
+                    SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 0);
+                    aiPaddle.render();
+
+                    // top and bottom wall
+                    SDL_SetRenderDrawColor(gRenderer, 0, 125, 0, 0);
+                    SDL_RenderFillRect(gRenderer, &topWall);
+                    SDL_RenderFillRect(gRenderer, &bottomWall);
+
+                    // score
+                    scoreTextTexture.render(2, 2);
+
+                    // specific case rendering
+                    if (!victory && !gameStarted)
+                    {
+                        textTexture.render((SCREEN_WIDTH - textTexture.getWidth()) / 2, (SCREEN_HEIGHT - textTexture.getHeight()) / 2 - 30);
+                    }
+
+                    if (victory)
+                    {
+                        victoryTextTexture.render((SCREEN_WIDTH - textTexture.getWidth()) / 2, (SCREEN_HEIGHT - textTexture.getHeight()) / 2 - 50);
+                        restartTextTexture.render((SCREEN_WIDTH - textTexture.getWidth()) / 2, (SCREEN_HEIGHT - textTexture.getHeight()) / 2);
+                    }
+
+                    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+                    // Update screen
+                    SDL_RenderPresent(gRenderer);
+                }
             }
         }
+
+        // cleanup and close
+        close();
+
+        return 0;
     }
-    
-    // cleanup and close
-    close(gWindow, gRenderer);
 
-    return 0;
-}
-
-bool init(SDL_Window* gWindow, SDL_Renderer* gRenderer)
+bool init()
 {
     // flag
     bool success = true;
@@ -219,6 +355,9 @@ bool init(SDL_Window* gWindow, SDL_Renderer* gRenderer)
                 {
                     printf("SDL_ttf could not initialize! SDL_ttf Error:L %s\n", TTF_GetError());
                 }
+
+                // set random seed
+                srand(time(0));
             }
         }
     }
@@ -231,25 +370,65 @@ bool loadMedia()
     // load flag
     bool success = true;
 
-    // load ball
+    gFontRegular = TTF_OpenFont("arial.ttf", 14);
+    if (gFontRegular == NULL)
+    {
+        printf("Unable to load regular font! TTF Error: %s\n", TTF_GetError());
+        success = false;
+    }
 
-    // load player paddle
+    gFontBoldLarge = TTF_OpenFont("arial.ttf", 20);
+    if (gFontBoldLarge == NULL)
+    {
+        printf("Unable to load large bold font! TTF Error: %s\n", TTF_GetError());
+        success = false;
+    }
+    // set font to bold
+    TTF_SetFontStyle(gFontBoldLarge, TTF_STYLE_BOLD);
 
-    // load ai paddle
+    if (!textTexture.loadFromRenderedText(gFontRegular, "Press Spacebar to start", blackColor))
+    {
+        printf("Unable to load test text!\n");
+        success = false;
+    }
 
-    // load start text promt
+    if (!victoryTextTexture.loadFromRenderedText(gFontRegular, "Victory!", blackColor))
+    {
+        printf("Unable to load victory text!\n");
+        success = false;
+    }
 
-    // load restart text prompt
+    if (!restartTextTexture.loadFromRenderedText(gFontRegular, "Press 'R' to restart...", blackColor))
+    {
+            printf("Unable to load restart text!\n");
+            success = false;
+    }
 
-    // load victory and restart text prompt
+    if (!scoreTextTexture.loadFromRenderedText(gFontRegular, "Player: 0 AI:0", blackColor))
+    {
+        printf("Unable to load score text!\n");
+        success = false;
+    }
+
+    if (!ballTexture.loadFromFile("dot.bmp"))
+    {
+        printf("Unable to load ball texture!\n");
+        success = false;
+    }
 
     return success;
 }
 
-void close(SDL_Window* gWindow, SDL_Renderer* gRenderer)
+void close()
 {
     // Deallocate textures
+    textTexture.free();
+    victoryTextTexture.free();
+    ballTexture.free();
 
+    // Dealloc Fonts
+    TTF_CloseFont(gFontRegular);
+    TTF_CloseFont(gFontBoldLarge);
 
     // Destroy window
     SDL_DestroyRenderer(gRenderer);
@@ -259,5 +438,6 @@ void close(SDL_Window* gWindow, SDL_Renderer* gRenderer)
 
     // Quit SDL subsystems
     IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 }

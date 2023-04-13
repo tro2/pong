@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include "LTexture.h"
+#include "Ball.h"
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
@@ -17,7 +18,7 @@ public:
 	static const int PADDLE_VELOCITY = 2;
 
 	// inits vars
-	Paddle();
+	Paddle(int posX, int posY);
 
 	// moves up and checks collision with top wall
 	void moveUp(const SDL_Rect& topWall);
@@ -25,10 +26,21 @@ public:
 	// moves down and checks collision with bottom wall
 	void moveDown(const SDL_Rect& bottomWall);
 
-	// shows the Paddle on screen
-	void render(SDL_Renderer* renderer, const LTexture& gPaddleTexture);
+	// determines and executes ai move based on ball position
+	void executeAIMove(const Ball& ball);
 
+	// shows the Paddle on screen
+	// Currently using rect texture rendering to represent paddles, subject to change
+	void render(/*const LTexture& gPaddleTexture*/);
+
+	// checks collisions between rects
 	bool checkCollision(const SDL_Rect& a, const SDL_Rect& b);
+
+	// gets collider
+	SDL_Rect getCollider() const;
+
+	// set ball position (for restarts)
+	void setPosition(int x, int y);
 
 private:
 	// x and y coords of the Paddle
