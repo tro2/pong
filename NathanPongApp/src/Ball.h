@@ -20,7 +20,7 @@ public:
 	double calculateYVel(double xVel);
 
 	// moves ball and checks for collision with top/bottom wall and paddles
-	void move(const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallCollider, const SDL_Rect& playerPaddleCollider, const SDL_Rect& aiPaddleCollider);
+	void move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallCollider, const SDL_Rect& playerPaddleCollider, const SDL_Rect& aiPaddleCollider);
 
 	// checks if ball is in either goal
 	// returns -1 if in left goal
@@ -54,5 +54,5 @@ private:
 
 	
 	// helper function to add double velocity b to int a and ensure proper rounding
-	int addVelocity(int a, double b);
+	int add(int a, double b);
 };

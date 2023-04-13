@@ -10,32 +10,32 @@ Paddle::Paddle(int posX, int posY)
 	mCollider = { mPosX, mPosY, PADDLE_WIDTH, PADDLE_HEIGHT };
 }
 
-void Paddle::moveUp(const SDL_Rect& topWall)
+void Paddle::moveUp(double timeStep, const SDL_Rect& topWall)
 {
 	// move up/down
-	mPosY -= PADDLE_VELOCITY;
+	mPosY = add(mPosY, -PADDLE_VELOCITY * timeStep);
 	mCollider.y = mPosY;
 
 	// check collision or out of bounds
 	if ((mPosY < 0) || checkCollision(mCollider, topWall))
 	{
 		// move back
-		mPosY += PADDLE_VELOCITY;
+		mPosY = add(mPosY, PADDLE_VELOCITY * timeStep);
 		mCollider.y = mPosY;
 	}
 }
 
-void Paddle::moveDown(const SDL_Rect& bottomWall)
+void Paddle::moveDown(double timeStep, const SDL_Rect& bottomWall)
 {
 	// move down
-	mPosY += PADDLE_VELOCITY;
+	mPosY = add(mPosY, PADDLE_VELOCITY * timeStep);
 	mCollider.y = mPosY;
 
 	// check collision or out of bounds
 	if ((mPosY + PADDLE_HEIGHT > SCREEN_HEIGHT) || checkCollision(mCollider, bottomWall))
 	{
 		// move back
-		mPosY -= PADDLE_VELOCITY;
+		mPosY = add(mPosY, -PADDLE_VELOCITY * timeStep);
 		mCollider.y = mPosY;
 	}
 }
@@ -118,4 +118,12 @@ void Paddle::setPosition(int x, int y)
 	// update collider as well
 	mCollider.x = mPosX;
 	mCollider.y = mPosY;
+}
+
+int Paddle::add(int a, double b)
+{
+	double preciseA = a;
+	preciseA += b;
+
+	return static_cast<int>(round(preciseA));
 }

@@ -13,13 +13,13 @@ Ball::Ball(int x, int y)
 	ballCollider = { posX, posY, BALL_WIDTH, BALL_HEIGHT };
 }
 
-void Ball::move(const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallCollider, const SDL_Rect& playerPaddleCollider, const SDL_Rect& aiPaddleCollider)
+void Ball::move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallCollider, const SDL_Rect& playerPaddleCollider, const SDL_Rect& aiPaddleCollider)
 {
 	// TODO change ball launch angle depending on where it hits the paddle
 	// TODO implement increasing speed per paddle hit
 	
 	// attempt move X
-	posX = addVelocity(posX, xVel);
+	posX = add(posX, xVel * timeStep);
 	ballCollider.x = posX;
 
 	// if ball struck a paddle
@@ -43,7 +43,7 @@ void Ball::move(const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallColli
 			// bumper xPos = screen width - paddle width
 			// displacement = posX - bumper
 			// new posX = bumper - displacement
-			posX = (SCREEN_WIDTH - Paddle::PADDLE_WIDTH) + (posX + BALL_WIDTH - (SCREEN_WIDTH - Paddle::PADDLE_WIDTH)) - BALL_WIDTH;
+			posX = ((SCREEN_WIDTH - Paddle::PADDLE_WIDTH) + (posX + BALL_WIDTH - (SCREEN_WIDTH - Paddle::PADDLE_WIDTH)) - BALL_WIDTH);
 		}
 
 		// reverse x velocity
@@ -54,7 +54,7 @@ void Ball::move(const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallColli
 	}
 	
 	// attempt move Y
-	posY = addVelocity(posY,yVel);
+	posY = add(posY,yVel * timeStep);
 	ballCollider.y = posY;
 
 	// if ball struck a wall
@@ -74,7 +74,8 @@ void Ball::move(const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallColli
 		{
 			// posY = displacement past bottom paddle subtracted from the paddle height
 			// (ex: ball move 3 pixels past paddle, final position is 3 pixels above the paddle
-			posY = (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) - (posY + BALL_HEIGHT - (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT)) - BALL_HEIGHT;
+			int finalPosition = (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) - (posY + BALL_HEIGHT - (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT)) - BALL_HEIGHT;
+			posY = static_cast<int>(round(finalPosition));
 		}
 
 		// reverse y velocity
@@ -165,7 +166,7 @@ void Ball::setPosition(int x, int y)
 	ballCollider.y = posY;
 }
 
-int Ball::addVelocity(int a, double b)
+int Ball::add(int a, double b)
 {
 	double preciseA = a;
 	preciseA += b;
@@ -175,8 +176,8 @@ int Ball::addVelocity(int a, double b)
 
 void Ball::launch()
 {
-	xVel = -1;
-	yVel = -1;
+	xVel = -150;
+	yVel = -150;
 
 	//TODO fix launch velocity
 }

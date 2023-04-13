@@ -15,16 +15,16 @@ public:
 	static const int PADDLE_HEIGHT = 40;
 
 	// max velocity
-	static const int PADDLE_VELOCITY = 2;
+	constexpr static double PADDLE_VELOCITY = 100.0;
 
 	// inits vars
 	Paddle(int posX, int posY);
 
 	// moves up and checks collision with top wall
-	void moveUp(const SDL_Rect& topWall);
+	void moveUp(double timeStep, const SDL_Rect& topWall);
 
 	// moves down and checks collision with bottom wall
-	void moveDown(const SDL_Rect& bottomWall);
+	void moveDown(double timeStep, const SDL_Rect& bottomWall);
 
 	// determines and executes ai move based on ball position
 	void executeAIMove(const Ball& ball);
@@ -49,4 +49,7 @@ private:
 
 	// Paddle's collision box
 	SDL_Rect mCollider;
+
+	// add for proper conversion of double to int
+	int add(int a, double b);
 };
