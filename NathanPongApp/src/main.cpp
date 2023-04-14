@@ -8,7 +8,6 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
-#include <time.h>
 
 // ==============================================
 // GLOBAL VARIABLES
@@ -66,7 +65,7 @@ int main(int, char**)
         else
         {
             const int WALL_HEIGHT = 40;
-            const int GOAL_BOX_WIDTH = 1;
+            const int GOAL_BOX_WIDTH = 7;
             const int TARGET_GOALS = 3;
             
             // FLAGS ============================
@@ -182,8 +181,6 @@ int main(int, char**)
                     // start game
                     gameStarted = true;
 
-                    printf("Game started");
-
                     gBall.launch();
 
                 }
@@ -212,8 +209,6 @@ int main(int, char**)
                     {
                         case -1:
                         {
-                            printf("Score");
-
                             aiScore++;
                             if (aiScore == TARGET_GOALS)
                             {
@@ -233,7 +228,7 @@ int main(int, char**)
                             // reset all positions
                             playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
                             aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                            gBall.setPosition((SCREEN_WIDTH - Paddle::PADDLE_WIDTH) / 2, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                            gBall.setPosition((SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
 
                             break;
                         }
@@ -303,8 +298,6 @@ int main(int, char**)
                 SDL_RenderPresent(gRenderer);
 
                 timeStep = deltaTimer.getTicks() / 1000.0;
-
-                printf("%f\n", timeStep);
             }
         }
     }
@@ -364,9 +357,6 @@ bool init()
                 {
                     printf("SDL_ttf could not initialize! SDL_ttf Error:L %s\n", TTF_GetError());
                 }
-
-                // set random seed
-                srand(time(0));
             }
         }
     }

@@ -14,7 +14,7 @@ public:
 	static const int PADDLE_WIDTH = 10;
 	static const int PADDLE_HEIGHT = 40;
 
-	// max velocity
+	// max velocity of the paddle in pixels/second
 	constexpr static double PADDLE_VELOCITY = 100.0;
 
 	// inits vars

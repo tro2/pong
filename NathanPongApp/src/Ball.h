@@ -10,8 +10,8 @@ public:
 	const static int BALL_WIDTH = 10;
 	const static int BALL_HEIGHT = 10;
 
-	// the maximum allowed total velocity
-	static constexpr double MAX_VELOCITY = 2.0;
+	// the starting total velocity in pixels per second
+	static constexpr double START_VELOCITY = 200;
 
 	// inits vars
 	Ball(int posX, int posY);
@@ -50,9 +50,9 @@ private:
 	double xVel;
 	double yVel;
 
-	SDL_Rect ballCollider;
+	// ball total velocity
+	double velTotal;
 
-	
-	// helper function to add double velocity b to int a and ensure proper rounding
-	int add(int a, double b);
+	// collider
+	SDL_Rect ballCollider;
 };

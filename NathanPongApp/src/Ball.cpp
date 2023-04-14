@@ -1,6 +1,7 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include <cmath>
+#include "Utils.h"
 
 Ball::Ball(int x, int y)
 {
@@ -9,6 +10,7 @@ Ball::Ball(int x, int y)
 	
 	xVel = 0;
 	yVel = 0;
+	velTotal = 0;
 
 	ballCollider = { posX, posY, BALL_WIDTH, BALL_HEIGHT };
 }
@@ -19,7 +21,7 @@ void Ball::move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect
 	// TODO implement increasing speed per paddle hit
 	
 	// attempt move X
-	posX = add(posX, xVel * timeStep);
+	posX = Utils::preciseAdd(posX, xVel * timeStep);
 	ballCollider.x = posX;
 
 	// if ball struck a paddle
@@ -54,7 +56,7 @@ void Ball::move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect
 	}
 	
 	// attempt move Y
-	posY = add(posY,yVel * timeStep);
+	posY = Utils::preciseAdd(posY,yVel * timeStep);
 	ballCollider.y = posY;
 
 	// if ball struck a wall
@@ -166,23 +168,33 @@ void Ball::setPosition(int x, int y)
 	ballCollider.y = posY;
 }
 
-int Ball::add(int a, double b)
-{
-	double preciseA = a;
-	preciseA += b;
-
-	return static_cast<int>(round(preciseA));
-}
-
 void Ball::launch()
 {
-	xVel = -150;
-	yVel = -150;
+	// set target velocity
+	velTotal = START_VELOCITY;
 
-	//TODO fix launch velocity
+	// define bounds for random vel generator, and ensures ball isn't fired directly at paddle
+	double upperBound = START_VELOCITY * 7/8;
+	double lowerBound = START_VELOCITY * sqrt(2) / 2;
+
+	// calculate velocities
+	xVel = Utils::randomDouble(lowerBound, upperBound);
+	yVel = calculateYVel(xVel);
+
+	// randomize direction
+	if (Utils::randomInt(0,1))
+	{
+		xVel = -xVel;
+	}
+
+	if (Utils::randomInt(0,1))
+	{
+		yVel = -yVel;
+	}
 }
 
 double Ball::calculateYVel(double xVel)
 {
-	return -1;
+	// pythagorean theorum :sunglas:
+	return sqrt(velTotal * velTotal - xVel * xVel);
 }
