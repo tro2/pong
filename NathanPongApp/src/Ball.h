@@ -41,6 +41,10 @@ public:
 	// sets ball to random x and y velocity such that the launch angle is between 45 and 135 degrees in either direction
 	void launch();
 
+	// gets coords
+	int getX() const { return posX; }
+	int getY() const { return posY; }
+
 private:
 	// ball position components
 	int posX;

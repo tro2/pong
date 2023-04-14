@@ -11,11 +11,11 @@ class Paddle
 {
 public:
 	// dimensions
-	static const int PADDLE_WIDTH = 10;
-	static const int PADDLE_HEIGHT = 40;
+	static const int PADDLE_WIDTH = 15;
+	static const int PADDLE_HEIGHT = 80;
 
 	// max velocity of the paddle in pixels/second
-	constexpr static double PADDLE_VELOCITY = 100.0;
+	constexpr static double PADDLE_VELOCITY = 150.0;
 
 	// inits vars
 	Paddle(int posX, int posY);
@@ -27,7 +27,7 @@ public:
 	void moveDown(double timeStep, const SDL_Rect& bottomWall);
 
 	// determines and executes ai move based on ball position
-	void executeAIMove(const Ball& ball);
+	void executeAIMove(const Ball& ball, double timeStep, const SDL_Rect& topWall, const SDL_Rect& bottomWall);
 
 	// shows the Paddle on screen
 	// Currently using rect texture rendering to represent paddles, subject to change
@@ -49,7 +49,4 @@ private:
 
 	// Paddle's collision box
 	SDL_Rect mCollider;
-
-	// add for proper conversion of double to int
-	int add(int a, double b);
 };

@@ -1,4 +1,5 @@
 #include "Paddle.h"
+#include "Utils.h"
 
 Paddle::Paddle(int posX, int posY)
 {
@@ -13,14 +14,14 @@ Paddle::Paddle(int posX, int posY)
 void Paddle::moveUp(double timeStep, const SDL_Rect& topWall)
 {
 	// move up/down
-	mPosY = add(mPosY, -PADDLE_VELOCITY * timeStep);
+	mPosY = Utils::preciseAdd(mPosY, -PADDLE_VELOCITY * timeStep);
 	mCollider.y = mPosY;
 
 	// check collision or out of bounds
 	if ((mPosY < 0) || checkCollision(mCollider, topWall))
 	{
 		// move back
-		mPosY = add(mPosY, PADDLE_VELOCITY * timeStep);
+		mPosY = Utils::preciseAdd(mPosY, PADDLE_VELOCITY * timeStep);
 		mCollider.y = mPosY;
 	}
 }
@@ -28,21 +29,30 @@ void Paddle::moveUp(double timeStep, const SDL_Rect& topWall)
 void Paddle::moveDown(double timeStep, const SDL_Rect& bottomWall)
 {
 	// move down
-	mPosY = add(mPosY, PADDLE_VELOCITY * timeStep);
+	mPosY = Utils::preciseAdd(mPosY, PADDLE_VELOCITY * timeStep);
 	mCollider.y = mPosY;
 
 	// check collision or out of bounds
 	if ((mPosY + PADDLE_HEIGHT > SCREEN_HEIGHT) || checkCollision(mCollider, bottomWall))
 	{
 		// move back
-		mPosY = add(mPosY, -PADDLE_VELOCITY * timeStep);
+		mPosY = Utils::preciseAdd(mPosY, -PADDLE_VELOCITY * timeStep);
 		mCollider.y = mPosY;
 	}
 }
 
-void Paddle::executeAIMove(const Ball& ball)
+void Paddle::executeAIMove(const Ball& ball, double timeStep, const SDL_Rect& topWall, const SDL_Rect& bottomWall)
 {
-	// TODO code AI behavior
+	// if ball is above
+	if (ball.getY() < this->mPosY)
+	{
+		this->moveUp(timeStep, topWall);
+	}
+	// if ball is below
+	else if (ball.getY() > this->mPosY + PADDLE_HEIGHT)
+	{
+		this->moveDown(timeStep, bottomWall);
+	}
 }
 
 void Paddle::render(/*const LTexture& gPaddleTexture*/)
@@ -118,12 +128,4 @@ void Paddle::setPosition(int x, int y)
 	// update collider as well
 	mCollider.x = mPosX;
 	mCollider.y = mPosY;
-}
-
-int Paddle::add(int a, double b)
-{
-	double preciseA = a;
-	preciseA += b;
-
-	return static_cast<int>(round(preciseA));
 }

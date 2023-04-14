@@ -199,7 +199,7 @@ int main(int, char**)
                     }
 
                     // ai inputs
-                    aiPaddle.executeAIMove(gBall);
+                    aiPaddle.executeAIMove(gBall, timeStep, topWall, bottomWall);
 
                     // move ball and check for collisions
                     gBall.move(timeStep, topWall, bottomWall, playerPaddle.getCollider(), aiPaddle.getCollider());
@@ -253,7 +253,7 @@ int main(int, char**)
                             // reset all positions
                             playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
                             aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                            gBall.setPosition((SCREEN_WIDTH - Paddle::PADDLE_WIDTH) / 2, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                            gBall.setPosition((SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
 
                             break;
                         }

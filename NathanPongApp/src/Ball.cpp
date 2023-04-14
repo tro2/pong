@@ -19,6 +19,7 @@ void Ball::move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect
 {
 	// TODO change ball launch angle depending on where it hits the paddle
 	// TODO implement increasing speed per paddle hit
+	// TODO refactor calculating the velocities after ball bounces
 	
 	// attempt move X
 	posX = Utils::preciseAdd(posX, xVel * timeStep);
@@ -69,14 +70,14 @@ void Ball::move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect
 		{
 			// posY = displacement past top paddle added onto the paddle height
 			// (ex: ball move 3 pixels past paddle, final position is 3 pixels below the paddle
-			posY = (Paddle::PADDLE_HEIGHT - posY) + Paddle::PADDLE_HEIGHT;
+			posY = (bottomWallCollider.h - posY) + bottomWallCollider.h;
 		}
 		// ball is traveling down
 		if (yVel > 0)
 		{
 			// posY = displacement past bottom paddle subtracted from the paddle height
 			// (ex: ball move 3 pixels past paddle, final position is 3 pixels above the paddle
-			int finalPosition = (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) - (posY + BALL_HEIGHT - (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT)) - BALL_HEIGHT;
+			int finalPosition = (SCREEN_HEIGHT - bottomWallCollider.h) - (posY + BALL_HEIGHT - (SCREEN_HEIGHT - bottomWallCollider.h)) - BALL_HEIGHT;
 			posY = static_cast<int>(round(finalPosition));
 		}
 
