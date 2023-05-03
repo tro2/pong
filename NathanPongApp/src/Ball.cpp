@@ -17,9 +17,9 @@ Ball::Ball(int x, int y)
 
 void Ball::move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallCollider, const SDL_Rect& playerPaddleCollider, const SDL_Rect& aiPaddleCollider)
 {
-	// TODO change ball launch angle depending on where it hits the paddle
-	// TODO implement increasing speed per paddle hit
-	// TODO refactor calculating the velocities after ball bounces
+	// TODO (physics overhaul) change ball launch angle depending on where it hits the paddle
+	// TODO (physics overhaul) implement increasing speed per paddle hit
+	// TODO (physics overhaul) refactor calculating the velocities after ball bounces into a free function
 	
 	// attempt move X
 	posX = Utils::preciseAdd(posX, xVel * timeStep);
@@ -89,18 +89,18 @@ void Ball::move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect
 	}
 }
 
-int Ball::checkGoal(const SDL_Rect& leftGoal, const SDL_Rect& rightGoal)
+Goal Ball::checkGoal(const SDL_Rect& leftGoal, const SDL_Rect& rightGoal)
 {
 	if (checkCollision(ballCollider, leftGoal))
 	{
-		return -1;
+		return Goal::AI;
 	}
 	else if (checkCollision(ballCollider, rightGoal))
 	{
-		return 1;
+		return Goal::PLAYER;
 	}
 	
-	return 0;
+	return Goal::NONE;
 }
 
 void Ball::render(const LTexture& ballTexture)

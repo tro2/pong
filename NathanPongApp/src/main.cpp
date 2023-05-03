@@ -12,6 +12,12 @@
 // ==============================================
 // GLOBAL VARIABLES
 
+// TODO refactor global variables into structs
+// textures can be attached to objects
+// colors can go into renderer class
+// fonts can go into renderer class
+// text textures should be abstracted into a new class
+
 // window size
 extern const int SCREEN_WIDTH = 720;
 extern const int SCREEN_HEIGHT = 480;
@@ -19,6 +25,8 @@ extern const int SCREEN_HEIGHT = 480;
 // window
 SDL_Window* gWindow = NULL;
 
+// TODO (rendering overhaul) Abstract gRenderer into a class ...
+// add transform component and texture component to game objects
 // window renderer
 extern SDL_Renderer* gRenderer = NULL;
 
@@ -56,14 +64,14 @@ int main(int, char**)
         std::cout << "Failed to init!" << std::endl;
         return -1;
     }
-    
+
     // Load media
     if (!loadMedia())
     {
         std::cout << "Failed to load media!" << std::endl;
         return -1;
     }
-    
+
     // Start game loop
     const int WALL_HEIGHT = 40;
     const int GOAL_BOX_WIDTH = 7;
@@ -73,11 +81,23 @@ int main(int, char**)
     // Main loop flag
     bool quit = false;
 
+    /*
     // game started flag
     bool gameStarted = false;
 
     // game victory flag
     bool victory = false;
+    */
+
+    enum GameState
+    {
+        READY,
+        IN_GAME,
+        VICTORY,
+    };
+
+    // game state flag
+    GameState gameState = READY;
 
     // OBJECTS ==========================
 
@@ -164,8 +184,7 @@ int main(int, char**)
         if (currentKeyboardState[SDL_SCANCODE_R])
         {
             // restart flags
-            gameStarted = false;
-            victory = false;
+            gameState = GameState::READY;
 
             // reset all positions
             playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
@@ -177,16 +196,16 @@ int main(int, char**)
             playerScore = 0;
         }
         // game is stopped and needs to start
-        else if (!gameStarted && !victory && currentKeyboardState[SDL_SCANCODE_SPACE])
+        else if (gameState == READY && currentKeyboardState[SDL_SCANCODE_SPACE])
         {
             // start game
-            gameStarted = true;
+            gameState = IN_GAME;
 
             gBall.launch();
 
         }
         // game is in play
-        if (gameStarted && !victory)
+        if (gameState == IN_GAME)
         {
             // look at player inputs
             if (currentKeyboardState[SDL_SCANCODE_UP])
@@ -208,57 +227,63 @@ int main(int, char**)
             // check score achieved
             switch (gBall.checkGoal(leftGoal, rightGoal))
             {
-            case -1:
-            {
-                aiScore++;
-                if (aiScore == TARGET_GOALS)
+                case Goal::AI:
                 {
-                    victoryTextTexture.loadFromRenderedText(gFontBoldLarge, "AI Wins!", blackColor);
-                    victory = true;
+                    aiScore++;
+                    if (aiScore == TARGET_GOALS)
+                    {
+                        victoryTextTexture.loadFromRenderedText(gFontBoldLarge, "AI Wins!", blackColor);
+                        gameState = GameState::VICTORY;
+                    }
+                    else
+                    {
+                        gameState = GameState::READY;
+                    }
+
+                    // increment score counter texture
+                    scoreText.str("");
+                    scoreText << "Player: " << playerScore << " AI: " << aiScore;
+                    scoreTextTexture.loadFromRenderedText(gFontRegular, scoreText.str().c_str(), blackColor);
+
+                    // restart game
+                    // TODO refactor reset code into a free function
+
+                    // reset all positions
+                    playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    gBall.setPosition((SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
+
+                    break;
                 }
-
-                // increment score counter texture
-                scoreText.str("");
-                scoreText << "Player: " << playerScore << " AI: " << aiScore;
-                scoreTextTexture.loadFromRenderedText(gFontRegular, scoreText.str().c_str(), blackColor);
-
-                // restart game
-                // restart flags
-                gameStarted = false;
-
-                // reset all positions
-                playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                gBall.setPosition((SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
-
-                break;
-            }
-            case 1:
-            {
-                playerScore++;
-                if (playerScore == TARGET_GOALS)
+                case Goal::PLAYER:
                 {
-                    victoryTextTexture.loadFromRenderedText(gFontBoldLarge, "Player Wins!", blackColor);
-                    victory = true;
+                    playerScore++;
+                    if (playerScore == TARGET_GOALS)
+                    {
+                        victoryTextTexture.loadFromRenderedText(gFontBoldLarge, "Player Wins!", blackColor);
+                        gameState = GameState::VICTORY;
+                    }
+                    else
+                    {
+                        // game should continue
+                        gameState = GameState::READY;
+                    }
+
+                    // increment score counter texture
+                    scoreText.str("");
+                    scoreText << "Player: " << playerScore << " AI: " << aiScore;
+                    scoreTextTexture.loadFromRenderedText(gFontRegular, scoreText.str().c_str(), blackColor);
+
+                    // restart game
+
+                    // reset all positions
+                    playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    gBall.setPosition((SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
+
+                    break;
                 }
-
-                // increment score counter texture
-                scoreText.str("");
-                scoreText << "Player: " << playerScore << " AI: " << aiScore;
-                scoreTextTexture.loadFromRenderedText(gFontRegular, scoreText.str().c_str(), blackColor);
-
-                // restart game
-                // restart flags
-                gameStarted = false;
-
-                // reset all positions
-                playerPaddle.setPosition(0, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                aiPaddle.setPosition(SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                gBall.setPosition((SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
-
-                break;
-            }
-            default: break;
+                default: break;
             }
         }
 
@@ -282,12 +307,12 @@ int main(int, char**)
         scoreTextTexture.render(2, 2);
 
         // specific case rendering
-        if (!victory && !gameStarted)
+        if (gameState == READY)
         {
             textTexture.render((SCREEN_WIDTH - textTexture.getWidth()) / 2, (SCREEN_HEIGHT - textTexture.getHeight()) / 2 - 30);
         }
 
-        if (victory)
+        if (gameState == VICTORY)
         {
             victoryTextTexture.render((SCREEN_WIDTH - textTexture.getWidth()) / 2, (SCREEN_HEIGHT - textTexture.getHeight()) / 2 - 50);
             restartTextTexture.render((SCREEN_WIDTH - textTexture.getWidth()) / 2, (SCREEN_HEIGHT - textTexture.getHeight()) / 2);
@@ -388,8 +413,8 @@ bool loadMedia()
 
     if (!restartTextTexture.loadFromRenderedText(gFontRegular, "Press 'R' to restart...", blackColor))
     {
-            printf("Unable to load restart text!\n");
-            success = false;
+        printf("Unable to load restart text!\n");
+        success = false;
     }
 
     if (!scoreTextTexture.loadFromRenderedText(gFontRegular, "Player: 0 AI:0", blackColor))

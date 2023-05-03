@@ -3,6 +3,15 @@
 #include <SDL.h>
 #include "LTexture.h"
 
+// TODO (physics overhaul) refactor collision checking for objects into a physics manager
+// Move the Goal Enum there
+enum Goal
+{
+	AI,
+	PLAYER,
+	NONE
+};
+
 class Ball
 {
 public:
@@ -23,11 +32,7 @@ public:
 	void move(double timeStep, const SDL_Rect& topWallCollider, const SDL_Rect& bottomWallCollider, const SDL_Rect& playerPaddleCollider, const SDL_Rect& aiPaddleCollider);
 
 	// checks if ball is in either goal
-	// returns -1 if in left goal
-	// returns 0 if not in a goal
-	// returns 1 if in right goal
-	// TODO Make this an Enum
-	int checkGoal(const SDL_Rect& leftGoal, const SDL_Rect& rightGoal);
+	Goal checkGoal(const SDL_Rect& leftGoal, const SDL_Rect& rightGoal);
 
 	// shows the ball on screen
 	void render(const LTexture& ballTexture);
