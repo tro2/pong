@@ -2,6 +2,7 @@
 #include "Paddle.h"
 #include <cmath>
 #include "Utils.h"
+#include "Renderer.h"
 
 Ball::Ball(int x, int y)
 {
@@ -101,11 +102,6 @@ Goal Ball::checkGoal(const SDL_Rect& leftGoal, const SDL_Rect& rightGoal)
 	}
 	
 	return Goal::NONE;
-}
-
-void Ball::render(const LTexture& ballTexture)
-{
-	ballTexture.render(posX, posY);
 }
 
 bool Ball::checkCollision(const SDL_Rect& a, const SDL_Rect& b)

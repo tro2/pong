@@ -163,13 +163,16 @@ xcopy "$(ProjectDir)..\Resources\*" "$(OutDir)" /q/r/y</Command>
     <ClCompile Include="src\LTexture.cpp" />
     <ClCompile Include="src\LTimer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Ball.h" />
+    <ClInclude Include="src\GameData.h" />
     <ClInclude Include="src\Paddle.h" />
     <ClInclude Include="src\LTexture.h" />
     <ClInclude Include="src\LTimer.h" />
+    <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

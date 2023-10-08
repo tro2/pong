@@ -3,6 +3,10 @@
 #include <SDL.h>
 #include "LTexture.h"
 
+// TODO these are placeholder variables until collisions are abstracted into a game logic manager
+const int SCREEN_WIDTH = 720;
+const int SCREEN_HEIGHT = 480;
+
 // TODO (physics overhaul) refactor collision checking for objects into a physics manager
 // Move the Goal Enum there
 enum Goal
@@ -33,9 +37,6 @@ public:
 
 	// checks if ball is in either goal
 	Goal checkGoal(const SDL_Rect& leftGoal, const SDL_Rect& rightGoal);
-
-	// shows the ball on screen
-	void render(const LTexture& ballTexture);
 
 	// helper function to check collision between ball and wall
 	bool checkCollision(const SDL_Rect& a, const SDL_Rect& b);

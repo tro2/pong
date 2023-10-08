@@ -2,10 +2,10 @@
 
 #include <string>
 #include <iostream>
-#include <SDL.h>
-#include <SDL_ttf.h>
 
-extern SDL_Renderer* gRenderer;
+#include <SDL.h>
+
+// TODO make this class stupid and think about access
 
 // Wrapper class for SDL Textures to make colorkeying easier
 class LTexture
@@ -15,30 +15,22 @@ public:
 
 	~LTexture();
 
-	// loads the image at specified path
-	bool loadFromFile(std::string path);
-
-	// loads text string into a texture with the given color
-	bool loadFromRenderedText(TTF_Font* font, std::string textureText, SDL_Color textColor);
-
 	// dealloc texture
 	void free();
 
-	// set color modulation
-	void setColor(Uint8 red, Uint8 green, Uint8 blue);
-
-	// set blending
-	void setBlendMode(SDL_BlendMode blending);
-
-	// set alpha modulation
-	void setAlpha(Uint8 alpha);
-
-	// render texture using the global renderer at the given point, optional clip for sprite sheet
-	void render(int x, int y, SDL_Rect* clip = NULL) const;
+	// get texture
+	SDL_Texture* getMTexture() const { return mTexture; }
 
 	// get dimensions
-	int getWidth() const;
-	int getHeight() const;
+	int getWidth() const { return mWidth; }
+	int getHeight() const { return mHeight; };
+
+	// sets texture pointer
+	void setMTexture(SDL_Texture* texture) { mTexture = texture; }
+
+	// sets dimensions
+	void setWidth(int w) { mWidth = w; }
+	void setHeight(int h) { mHeight = h; }
 
 private:
 	// the underlying texture

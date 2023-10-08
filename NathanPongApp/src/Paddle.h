@@ -4,9 +4,6 @@
 #include "LTexture.h"
 #include "Ball.h"
 
-extern const int SCREEN_WIDTH;
-extern const int SCREEN_HEIGHT;
-
 class Paddle
 {
 public:
@@ -29,11 +26,8 @@ public:
 	// determines and executes ai move based on ball position
 	void executeAIMove(const Ball& ball, double timeStep, const SDL_Rect& topWall, const SDL_Rect& bottomWall);
 
-	// shows the Paddle on screen
-	// Currently using rect texture rendering to represent paddles, subject to change
-	void render(/*const LTexture& gPaddleTexture*/);
-
 	// checks collisions between rects
+	// TODO move this to Utils.h and make alternate for vector motion
 	bool checkCollision(const SDL_Rect& a, const SDL_Rect& b);
 
 	// gets collider

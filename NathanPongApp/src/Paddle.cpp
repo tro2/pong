@@ -33,7 +33,8 @@ void Paddle::moveDown(double timeStep, const SDL_Rect& bottomWall)
 	mCollider.y = mPosY;
 
 	// check collision or out of bounds
-	if ((mPosY + PADDLE_HEIGHT > SCREEN_HEIGHT) || checkCollision(mCollider, bottomWall))
+	// HACK only checking collision with bottom wall, doesn't account for the paddle moving completely clear of the bottom wall
+	if (checkCollision(mCollider, bottomWall))
 	{
 		// move back
 		mPosY = Utils::preciseAdd(mPosY, -PADDLE_VELOCITY * timeStep);
@@ -53,15 +54,6 @@ void Paddle::executeAIMove(const Ball& ball, double timeStep, const SDL_Rect& to
 	{
 		this->moveDown(timeStep, bottomWall);
 	}
-}
-
-void Paddle::render(/*const LTexture& gPaddleTexture*/)
-{
-	// show the Paddle
-	// gPaddleTexture.render(mPosX, mPosY);
-
-	// simple rect based rendering
-	SDL_RenderFillRect(gRenderer, &mCollider);
 }
 
 bool Paddle::checkCollision(const SDL_Rect& a, const SDL_Rect& b)
