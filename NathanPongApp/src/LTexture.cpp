@@ -3,27 +3,27 @@
 
 LTexture::LTexture()
 {
-	mTexture = NULL;
+    mTexture = NULL;
 
-	mWidth = 0;
-	mHeight = 0;
+    mWidth = 0;
+    mHeight = 0;
 }
 
 LTexture::~LTexture()
 {
-	// dealloc
-	free();
+    // dealloc
+    free();
 }
 
 void LTexture::free()
 {
-	// if texture exists
-	if (mTexture != nullptr)
-	{
-		SDL_DestroyTexture(mTexture);
-		mTexture = nullptr;
-		mWidth = 0;
-		mHeight = 0;
-	}
+    // if texture exists
+    if (mTexture != nullptr)
+    {
+        SDL_DestroyTexture(mTexture);
+        mTexture = nullptr;
+        mWidth = 0;
+        mHeight = 0;
+    }
 }
 

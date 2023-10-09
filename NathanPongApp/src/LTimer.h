@@ -4,29 +4,29 @@
 class LTimer
 {
 public:
-	LTimer();
+    LTimer();
 
-	// clock actions
-	void start();
-	void stop();
-	void pause();
-	void unpause();
+    // clock actions
+    void start();
+    void stop();
+    void pause();
+    void unpause();
 
-	// get the timer's current time
-	Uint32 getTicks() const;
+    // get the timer's current time
+    Uint32 getTicks() const;
 
-	// status checks
-	bool isStarted();
-	bool isPaused();
+    // status checks
+    bool isStarted();
+    bool isPaused();
 
 private:
-	// time when started
-	Uint32 mStartTicks;
+    // time when started
+    Uint32 mStartTicks;
 
-	// ticks stored when paused
-	Uint32 mPausedTicks;
+    // ticks stored when paused
+    Uint32 mPausedTicks;
 
-	// status
-	bool mPaused;
-	bool mStarted;
+    // status
+    bool mPaused;
+    bool mStarted;
 };

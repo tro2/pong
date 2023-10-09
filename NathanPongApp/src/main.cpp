@@ -104,18 +104,22 @@ int main(int, char**)
 
     // Player paddles
     Paddle playerPaddle(0, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-    Paddle aiPaddle(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+    Paddle aiPaddle(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH
+        , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
 
     // create ball in center of screen
-    Ball gBall((appContext.SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (appContext.SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
+    Ball gBall((appContext.SCREEN_WIDTH - Ball::BALL_WIDTH) / 2
+        , (appContext.SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
 
     // top and bottom walls
     SDL_Rect topWall = { 0, 0, appContext.SCREEN_WIDTH, WALL_HEIGHT};
-    SDL_Rect bottomWall = { 0, appContext.SCREEN_HEIGHT - WALL_HEIGHT, appContext.SCREEN_WIDTH, WALL_HEIGHT };
+    SDL_Rect bottomWall = { 0, appContext.SCREEN_HEIGHT - WALL_HEIGHT
+        , appContext.SCREEN_WIDTH, WALL_HEIGHT };
 
     // goal boxes
     SDL_Rect leftGoal = { 0, 0, GOAL_BOX_WIDTH, appContext.SCREEN_HEIGHT };
-    SDL_Rect rightGoal = { appContext.SCREEN_WIDTH - GOAL_BOX_WIDTH, 0, GOAL_BOX_WIDTH, appContext.SCREEN_HEIGHT };
+    SDL_Rect rightGoal = { appContext.SCREEN_WIDTH - GOAL_BOX_WIDTH, 0
+        , GOAL_BOX_WIDTH, appContext.SCREEN_HEIGHT };
 
     // OTHER ============================
 
@@ -179,9 +183,7 @@ int main(int, char**)
 
         SDL_SetRenderDrawColor(appContext.gameRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-        int numKeys;
-
-        const Uint8* currentKeyboardState = SDL_GetKeyboardState(&numKeys);
+        const Uint8* currentKeyboardState = SDL_GetKeyboardState(nullptr);
 
         // if game needs to be restarted
         if (currentKeyboardState[SDL_SCANCODE_R])
@@ -190,9 +192,12 @@ int main(int, char**)
             gameState = GameState::READY;
 
             // reset all positions
-            playerPaddle.setPosition(0, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-            aiPaddle.setPosition(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-            gBall.setPosition((appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH) / 2, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+            playerPaddle.setPosition(0
+                , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+            aiPaddle.setPosition(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH
+                , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+            gBall.setPosition((appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH) / 2
+                , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
 
             // restart goal count
             aiScore = 0;
@@ -225,7 +230,9 @@ int main(int, char**)
             aiPaddle.executeAIMove(gBall, timeStep, topWall, bottomWall);
 
             // move ball and check for collisions
-            gBall.move(timeStep, topWall, bottomWall, playerPaddle.getCollider(), aiPaddle.getCollider());
+            gBall.move(timeStep, topWall, bottomWall
+                , playerPaddle.getCollider()
+                , aiPaddle.getCollider());
 
             // check score achieved
             switch (gBall.checkGoal(leftGoal, rightGoal))
@@ -235,7 +242,9 @@ int main(int, char**)
                     aiScore++;
                     if (aiScore == TARGET_GOALS)
                     {
-                        gameRenderer.loadFromRenderedText(gameTextures.victoryTextTexture, gameRenderer.gFontBoldLarge, "AI Wins!", gameRenderer.black, appContext);
+                        gameRenderer.loadFromRenderedText(gameTextures.victoryTextTexture
+                            , gameRenderer.gFontBoldLarge, "AI Wins!", gameRenderer.black
+                            , appContext);
                         gameState = GameState::VICTORY;
                     }
                     else
@@ -246,15 +255,20 @@ int main(int, char**)
                     // increment score counter texture
                     scoreText.str("");
                     scoreText << "Player: " << playerScore << " AI: " << aiScore;
-                    gameRenderer.loadFromRenderedText(gameTextures.scoreTextTexture, gameRenderer.gFontRegular, scoreText.str().c_str(), gameRenderer.black, appContext);
+                    gameRenderer.loadFromRenderedText(gameTextures.scoreTextTexture
+                        , gameRenderer.gFontRegular, scoreText.str().c_str(), gameRenderer.black
+                        , appContext);
 
                     // restart game
                     // TODO refactor reset code into a free function
 
                     // reset all positions
-                    playerPaddle.setPosition(0, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                    aiPaddle.setPosition(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                    gBall.setPosition((appContext.SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (appContext.SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
+                    playerPaddle.setPosition(0
+                        , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    aiPaddle.setPosition(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH
+                        , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    gBall.setPosition((appContext.SCREEN_WIDTH - Ball::BALL_WIDTH) / 2
+                        , (appContext.SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
 
                     break;
                 }
@@ -263,7 +277,9 @@ int main(int, char**)
                     playerScore++;
                     if (playerScore == TARGET_GOALS)
                     {
-                        gameRenderer.loadFromRenderedText(gameTextures.victoryTextTexture, gameRenderer.gFontBoldLarge, "Player Wins!", gameRenderer.black, appContext);
+                        gameRenderer.loadFromRenderedText(gameTextures.victoryTextTexture
+                            , gameRenderer.gFontBoldLarge, "Player Wins!", gameRenderer.black
+                            , appContext);
                         gameState = GameState::VICTORY;
                     }
                     else
@@ -275,14 +291,19 @@ int main(int, char**)
                     // increment score counter texture
                     scoreText.str("");
                     scoreText << "Player: " << playerScore << " AI: " << aiScore;
-                    gameRenderer.loadFromRenderedText(gameTextures.scoreTextTexture, gameRenderer.gFontRegular, scoreText.str().c_str(), gameRenderer.black, appContext);
+                    gameRenderer.loadFromRenderedText(gameTextures.scoreTextTexture
+                        , gameRenderer.gFontRegular, scoreText.str().c_str(), gameRenderer.black
+                        , appContext);
 
                     // restart game
 
                     // reset all positions
-                    playerPaddle.setPosition(0, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                    aiPaddle.setPosition(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH, (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
-                    gBall.setPosition((appContext.SCREEN_WIDTH - Ball::BALL_WIDTH) / 2, (appContext.SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
+                    playerPaddle.setPosition(0
+                        , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    aiPaddle.setPosition(appContext.SCREEN_WIDTH - Paddle::PADDLE_WIDTH
+                        , (appContext.SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT) / 2);
+                    gBall.setPosition((appContext.SCREEN_WIDTH - Ball::BALL_WIDTH) / 2
+                        , (appContext.SCREEN_HEIGHT - Ball::BALL_HEIGHT) / 2);
 
                     break;
                 }
@@ -292,7 +313,8 @@ int main(int, char**)
 
         // render
         // ball
-        gameRenderer.renderTexture(gameTextures.ballTexture, gBall.getX(), gBall.getY(), appContext, nullptr);
+        gameRenderer.renderTexture(gameTextures.ballTexture, gBall.getX(), gBall.getY()
+            , appContext, nullptr);
 
         // paddles
         SDL_SetRenderDrawColor(appContext.gameRenderer, 0, 0, 255, 0);
@@ -307,24 +329,32 @@ int main(int, char**)
         SDL_RenderFillRect(appContext.gameRenderer, &bottomWall);
 
         // score
-        gameRenderer.renderTexture(gameTextures.scoreTextTexture, 2, 2, appContext, nullptr);
+        gameRenderer.renderTexture(gameTextures.scoreTextTexture, 2, 2
+            , appContext, nullptr);
 
         // specific case rendering
         if (gameState == READY)
         {
             gameRenderer.renderTexture(gameTextures.spacebarStartTextTexture,
-                (appContext.SCREEN_WIDTH - gameTextures.spacebarStartTextTexture.getWidth()) / 2,
-                (appContext.SCREEN_HEIGHT - gameTextures.spacebarStartTextTexture.getHeight()) / 2 - 30, appContext, nullptr);
+                (appContext.SCREEN_WIDTH - gameTextures.spacebarStartTextTexture.getWidth())
+                / 2,
+                (appContext.SCREEN_HEIGHT - gameTextures.spacebarStartTextTexture.getHeight())
+                / 2 - 30,
+                appContext, nullptr);
         }
 
         if (gameState == VICTORY)
         {
             gameRenderer.renderTexture(gameTextures.victoryTextTexture,
-                (appContext.SCREEN_WIDTH - gameTextures.spacebarStartTextTexture.getWidth()) / 2,
-                (appContext.SCREEN_HEIGHT - gameTextures.spacebarStartTextTexture.getHeight()) / 2 - 50, appContext, nullptr);
+                (appContext.SCREEN_WIDTH - gameTextures.spacebarStartTextTexture.getWidth()) 
+                / 2,
+                (appContext.SCREEN_HEIGHT - gameTextures.spacebarStartTextTexture.getHeight()) 
+                / 2 - 50
+                , appContext, nullptr);
             gameRenderer.renderTexture(gameTextures.restartTextTexture,
                 (appContext.SCREEN_WIDTH - gameTextures.spacebarStartTextTexture.getWidth()) / 2,
-                (appContext.SCREEN_HEIGHT - gameTextures.spacebarStartTextTexture.getHeight()) / 2, appContext, nullptr);
+                (appContext.SCREEN_HEIGHT - gameTextures.spacebarStartTextTexture.getHeight()) / 2
+                , appContext, nullptr);
         }
 
         SDL_SetRenderDrawColor(appContext.gameRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -347,7 +377,8 @@ bool init()
     // Init SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        std::cout << "SDL could not be initialized! SDL Error: " << SDL_GetError() << std::endl;
+        std::cout << "SDL could not be initialized! SDL Error: " << SDL_GetError() 
+            << std::endl;
         return false;
     }
 
@@ -355,14 +386,16 @@ bool init()
     int imgFlags = IMG_INIT_PNG;
     if (!(IMG_Init(imgFlags) & imgFlags))
     {
-        std::cout << "SDL_image could not be created! SDL_image Error: " << IMG_GetError() << std::endl;
+        std::cout << "SDL_image could not be created! SDL_image Error: " << IMG_GetError() 
+            << std::endl;
         return false;
     }
 
     // init SDL_ttf
     if (TTF_Init() == -1)
     {
-        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() 
+            << std::endl;
         return false;
     }
 

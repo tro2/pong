@@ -6,8 +6,8 @@
 
 void Logger::log(const std::string& message)
 {
-	auto time = std::chrono::system_clock::now();
-	std::time_t currentTime = std::chrono::system_clock::to_time_t(time);
+    auto time = std::chrono::system_clock::now();
+    std::time_t currentTime = std::chrono::system_clock::to_time_t(time);
 
     std::cout << currentDateTime() << " " << message << std::endl;
 }

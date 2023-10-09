@@ -36,8 +36,9 @@ void Renderer::close(AppContext& appContext, Textures& textures) const
 bool Renderer::init(AppContext& appContext) const
 {
     // create the window
-    appContext.gameWindow = SDL_CreateWindow("Test Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        appContext.SCREEN_WIDTH, appContext.SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    appContext.gameWindow = SDL_CreateWindow("Test Window", SDL_WINDOWPOS_UNDEFINED
+        , SDL_WINDOWPOS_UNDEFINED, appContext.SCREEN_WIDTH, appContext.SCREEN_HEIGHT
+        , SDL_WINDOW_SHOWN);
     if (appContext.gameWindow == nullptr)
     {
         std::cout << "Window could not be created! SDL Error: " << SDL_GetError() << std::endl;
@@ -45,7 +46,8 @@ bool Renderer::init(AppContext& appContext) const
     }
 
     // create renderer for the main window
-    appContext.gameRenderer = SDL_CreateRenderer(appContext.gameWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    appContext.gameRenderer = SDL_CreateRenderer(appContext.gameWindow, -1
+        , SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (appContext.gameRenderer == nullptr)
     {
         std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
@@ -89,7 +91,8 @@ bool Renderer::loadFromFile(LTexture& lTexture, std::string path, AppContext& ap
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
     if (loadedSurface == nullptr)
     {
-        std::cout << "Unable to load iamge " << path << "! SDL_image error: " << IMG_GetError() << std::endl;
+        std::cout << "Unable to load iamge " << path << "! SDL_image error: " << IMG_GetError() 
+            << std::endl;
     }
     else
     {
@@ -100,7 +103,8 @@ bool Renderer::loadFromFile(LTexture& lTexture, std::string path, AppContext& ap
         lTexture.setMTexture(SDL_CreateTextureFromSurface(appContext.gameRenderer, loadedSurface));
         if (lTexture.getMTexture() == nullptr)
         {
-            std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
+            std::cout << "Unable to create texture from " << path << "! SDL Error: " 
+                << SDL_GetError() << std::endl;
         }
         else
         {
@@ -116,7 +120,8 @@ bool Renderer::loadFromFile(LTexture& lTexture, std::string path, AppContext& ap
     return lTexture.getMTexture() != nullptr;
 }
 
-bool Renderer::loadFromRenderedText(LTexture& lTexture, TTF_Font* font, std::string textureText, SDL_Color textColor, AppContext& appContext) const
+bool Renderer::loadFromRenderedText(LTexture& lTexture, TTF_Font* font, std::string textureText
+    , SDL_Color textColor, AppContext& appContext) const
 {
     // remove possible preexisting texture
     lTexture.free();
@@ -155,25 +160,29 @@ bool Renderer::loadTextures(AppContext& appContext, Textures& textures) const
     bool success = true;
 
     // text textures
-    if (!loadFromRenderedText(textures.spacebarStartTextTexture, gFontRegular, "Press Spacebar to start", black, appContext))
+    if (!loadFromRenderedText(textures.spacebarStartTextTexture, gFontRegular
+        , "Press Spacebar to start", black, appContext))
     {
         printf("Unable to load test text!\n");
         success = false;
     }
 
-    if (!loadFromRenderedText(textures.victoryTextTexture, gFontRegular, "Victory!", black, appContext))
+    if (!loadFromRenderedText(textures.victoryTextTexture, gFontRegular, "Victory!", black
+        , appContext))
     {
         printf("Unable to load victory text!\n");
         success = false;
     }
 
-    if (!loadFromRenderedText(textures.restartTextTexture, gFontRegular, "Press 'R' to restart...", black, appContext))
+    if (!loadFromRenderedText(textures.restartTextTexture, gFontRegular, "Press 'R' to restart..."
+        , black, appContext))
     {
         printf("Unable to load restart text!\n");
         success = false;
     }
 
-    if (!loadFromRenderedText(textures.scoreTextTexture, gFontRegular, "Player: 0 AI: 0", black, appContext))
+    if (!loadFromRenderedText(textures.scoreTextTexture, gFontRegular, "Player: 0 AI: 0", black
+        , appContext))
     {
         printf("Unable to load score text!\n");
         success = false;
@@ -189,7 +198,8 @@ bool Renderer::loadTextures(AppContext& appContext, Textures& textures) const
     return success;
 }
 
-void Renderer::renderTexture(const LTexture& lTexture, int x, int y, AppContext& appContext, SDL_Rect* clip) const
+void Renderer::renderTexture(const LTexture& lTexture, int x, int y, AppContext& appContext
+    , SDL_Rect* clip) const
 {
     // define rendering space and render
     SDL_Rect renderQuad = { x, y, lTexture.getWidth(), lTexture.getHeight() };
