@@ -3,7 +3,7 @@
 #include <iostream>
 #include <SDL_image.h>
 
-Renderer::Renderer()
+RenderManager::RenderManager()
 {
     // Fonts
     TTF_Font* gFontRegular = nullptr;
@@ -11,7 +11,7 @@ Renderer::Renderer()
 
 }
 
-void Renderer::close(AppContext& appContext, Textures& textures) const
+void RenderManager::close(AppContext& appContext, Textures& textures) const
 {
     // Deallocate textures
     textures.spacebarStartTextTexture.free();
@@ -33,7 +33,7 @@ void Renderer::close(AppContext& appContext, Textures& textures) const
     appContext.gameWindow = nullptr;
 }
 
-bool Renderer::init(AppContext& appContext) const
+bool RenderManager::init(AppContext& appContext) const
 {
     // create the window
     appContext.gameWindow = SDL_CreateWindow("Test Window", SDL_WINDOWPOS_UNDEFINED
@@ -57,7 +57,7 @@ bool Renderer::init(AppContext& appContext) const
     return true;
 }
 
-bool Renderer::loadFonts()
+bool RenderManager::loadFonts()
 {
     // load flag
     bool success = true;
@@ -82,7 +82,7 @@ bool Renderer::loadFonts()
     return success;
 }
 
-bool Renderer::loadFromFile(LTexture& lTexture, std::string path, AppContext& appContext) const
+bool RenderManager::loadFromFile(LTexture& lTexture, std::string path, AppContext& appContext) const
 {
     // remove possible preexisting texture
     lTexture.free();
@@ -120,7 +120,7 @@ bool Renderer::loadFromFile(LTexture& lTexture, std::string path, AppContext& ap
     return lTexture.getMTexture() != nullptr;
 }
 
-bool Renderer::loadFromRenderedText(LTexture& lTexture, TTF_Font* font, std::string textureText
+bool RenderManager::loadFromRenderedText(LTexture& lTexture, TTF_Font* font, std::string textureText
     , SDL_Color textColor, AppContext& appContext) const
 {
     // remove possible preexisting texture
@@ -154,7 +154,7 @@ bool Renderer::loadFromRenderedText(LTexture& lTexture, TTF_Font* font, std::str
     return lTexture.getMTexture() != nullptr;
 }
 
-bool Renderer::loadTextures(AppContext& appContext, Textures& textures) const
+bool RenderManager::loadTextures(AppContext& appContext, Textures& textures) const
 {
     // load flag
     bool success = true;
@@ -198,7 +198,7 @@ bool Renderer::loadTextures(AppContext& appContext, Textures& textures) const
     return success;
 }
 
-void Renderer::renderTexture(const LTexture& lTexture, int x, int y, AppContext& appContext
+void RenderManager::renderTexture(const LTexture& lTexture, int x, int y, AppContext& appContext
     , SDL_Rect* clip) const
 {
     // define rendering space and render
@@ -214,7 +214,9 @@ void Renderer::renderTexture(const LTexture& lTexture, int x, int y, AppContext&
     SDL_RenderCopy(appContext.gameRenderer, lTexture.getMTexture(), clip, &renderQuad);
 }
 
-void Renderer::renderPaddle(const SDL_Rect& rect, AppContext& appContext)
+void RenderManager::renderRect(const SDL_Rect& rect, const SDL_Color& color, AppContext& appContext)
 {
+    SDL_SetRenderDrawColor(appContext.gameRenderer, color.r, color.g, color.b, color.a);
+    
     SDL_RenderFillRect(appContext.gameRenderer, &rect);
 }

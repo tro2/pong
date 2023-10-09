@@ -7,7 +7,7 @@
 #include "LTexture.h"
 
 // Renderer class abstracts SDL_Renderer
-class Renderer
+class RenderManager
 {
 public:
 
@@ -17,10 +17,13 @@ public:
 
     // Colors
     const SDL_Color black = { 0,0,0,0 };
+    const SDL_Color red = { 255,0,0,0 } ;
+    const SDL_Color blue = { 0,0,255,0 };
+    const SDL_Color green = { 0,125,0,0 };
 
-    Renderer();
+    RenderManager();
 
-    ~Renderer() {};
+    ~RenderManager() {};
 
     // unloads all textures and app context
     void close(AppContext& appContext, Textures& textures) const;
@@ -45,12 +48,7 @@ public:
     void renderTexture(const LTexture& lTexture, int x, int y, AppContext& appContext
         , SDL_Rect* clip = nullptr) const;
 
-    // TODO Temp function to render paddle rects until texture is made
-    void renderPaddle(const SDL_Rect& rect, AppContext& appContext);
+    // TODO Temp function to render rects until texture is made or I decide what to do
+    void renderRect(const SDL_Rect& rect, const SDL_Color& color, AppContext& appContext);
 
-};
-
-struct RenderComponent
-{
-    LTexture& texture;
 };
