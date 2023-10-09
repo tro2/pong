@@ -159,6 +159,7 @@ xcopy "$(ProjectDir)..\Resources\*" "$(OutDir)" /q/r/y</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Ball.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\Paddle.cpp" />
     <ClCompile Include="src\LTexture.cpp" />
     <ClCompile Include="src\LTimer.cpp" />
@@ -169,6 +170,7 @@ xcopy "$(ProjectDir)..\Resources\*" "$(OutDir)" /q/r/y</Command>
   <ItemGroup>
     <ClInclude Include="src\Ball.h" />
     <ClInclude Include="src\GameData.h" />
+    <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\Paddle.h" />
     <ClInclude Include="src\LTexture.h" />
     <ClInclude Include="src\LTimer.h" />

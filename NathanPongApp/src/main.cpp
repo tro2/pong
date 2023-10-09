@@ -2,6 +2,8 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <chrono>
+#include <ctime>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -11,6 +13,8 @@
 #include "LTimer.h"
 #include "Paddle.h"
 #include "Renderer.h"
+#include "Logger.h"
+
 
 // ==============================================
 // GLOBAL VARIABLES
@@ -162,11 +166,48 @@ int main(int, char**)
     {
         deltaTimer.start();
 
+        bool moveUp = false;
+        bool moveDown = false;
+
         while (SDL_PollEvent(&e) != 0)
         {
             if (e.type == SDL_QUIT)
             {
                 quit = true;
+            }
+            else if (e.type == SDL_KEYDOWN)
+            {
+                std::stringstream message("");
+                message << "SDL_KEYDOWN logged, key: " << e.key.keysym.scancode;
+
+                Logger::log(message.str());
+                
+                switch (e.key.keysym.scancode)
+                {
+                    case SDL_SCANCODE_UP:
+                        moveUp = true;
+                        break;
+                    case SDL_SCANCODE_DOWN:
+                        moveDown = true;
+                        break;
+                }
+            }
+            else if (e.type == SDL_KEYUP)
+            {
+                std::stringstream message("");
+                message << "SDL_KEYUP logged, key: " << e.key.keysym.scancode;
+
+                Logger::log(message.str());
+
+                switch (e.key.keysym.scancode)
+                {
+                case SDL_SCANCODE_UP:
+                    moveUp = false;
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    moveDown = false;
+                    break;
+                }
             }
         }
 
@@ -175,7 +216,21 @@ int main(int, char**)
 
         SDL_SetRenderDrawColor(appContext.gameRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-        const Uint8* currentKeyboardState = SDL_GetKeyboardState(NULL);
+        int numKeys;
+
+        const Uint8* currentKeyboardState = SDL_GetKeyboardState(&numKeys);
+
+        /*Logger::log("Check Movement");
+
+        for (int i = 0; i < numKeys; ++i)
+        {
+            if (currentKeyboardState[i])
+            {
+                std::stringstream stream(""); stream << i;
+
+                Logger::log(stream.str());
+            }
+        }*/
 
         // if game needs to be restarted
         if (currentKeyboardState[SDL_SCANCODE_R])
@@ -214,6 +269,16 @@ int main(int, char**)
             {
                 playerPaddle.moveDown(timeStep, bottomWall);
             }
+
+            /*if (moveUp)
+            {
+                playerPaddle.moveUp(timeStep, topWall);
+            }
+
+            if (moveDown)
+            {
+                playerPaddle.moveDown(timeStep, bottomWall);
+            }*/
 
             // ai inputs
             aiPaddle.executeAIMove(gBall, timeStep, topWall, bottomWall);
