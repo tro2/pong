@@ -1,4 +1,5 @@
 #include "Utils.h"
+
 #include <cmath>
 #include <random>
 
@@ -28,10 +29,63 @@ int Utils::randomInt(int lowerBound, int upperBound)
     return distr(eng);
 }
 
-int Utils::preciseAdd(int a, double b)
+int Utils::roundNearestPixel(double a)
 {
-    double preciseA = a;
-    preciseA += b;
+    return static_cast<int>(round(a));
+}
 
-    return static_cast<int>(round(preciseA));
+bool Utils::checkCollision(const SDL_Rect& a, const SDL_Rect& b)
+{
+    // the sides to check collisions
+    int leftA;
+    int rightA;
+    int topA;
+    int bottomA;
+
+    int leftB;
+    int rightB;
+    int topB;
+    int bottomB;
+
+    // Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    // Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+
+    // if horizontal bounds do not overlap
+    if (bottomA <= topB)
+    {
+        return false;
+    }
+
+    if (topA >= bottomB)
+    {
+        return false;
+    }
+
+    // if vertical bounds do not overlap
+    if (rightA <= leftB)
+    {
+        return false;
+    }
+
+    if (leftA >= rightB)
+    {
+        return false;
+    }
+
+    // both horizontal and vertical bounds overlap
+    return true;
+}
+
+double Utils::pythagCalcSide(double hyp, double side)
+{
+    return sqrt(hyp * hyp - side * side);
 }
