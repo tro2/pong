@@ -2,49 +2,41 @@
 
 #include <string>
 #include <iostream>
-#include <SDL.h>
-#include <SDL_ttf.h>
 
-extern SDL_Renderer* gRenderer;
+#include <SDL.h>
+
+// TODO make this class stupid and think about access
 
 // Wrapper class for SDL Textures to make colorkeying easier
 class LTexture
 {
 public:
-	LTexture();
+    LTexture();
 
-	~LTexture();
+    ~LTexture();
 
-	// loads the image at specified path
-	bool loadFromFile(std::string path);
+    // dealloc texture
+    void free();
 
-	// loads text string into a texture with the given color
-	bool loadFromRenderedText(TTF_Font* font, std::string textureText, SDL_Color textColor);
+    // get texture
+    SDL_Texture* getMTexture() const { return mTexture; }
 
-	// dealloc texture
-	void free();
+    // get dimensions
+    int getWidth() const { return mWidth; }
+    int getHeight() const { return mHeight; };
 
-	// set color modulation
-	void setColor(Uint8 red, Uint8 green, Uint8 blue);
+    // sets texture pointer
+    void setMTexture(SDL_Texture* texture) { mTexture = texture; }
 
-	// set blending
-	void setBlendMode(SDL_BlendMode blending);
-
-	// set alpha modulation
-	void setAlpha(Uint8 alpha);
-
-	// render texture using the global renderer at the given point, optional clip for sprite sheet
-	void render(int x, int y, SDL_Rect* clip = NULL) const;
-
-	// get dimensions
-	int getWidth() const;
-	int getHeight() const;
+    // sets dimensions
+    void setWidth(int w) { mWidth = w; }
+    void setHeight(int h) { mHeight = h; }
 
 private:
-	// the underlying texture
-	SDL_Texture* mTexture;
+    // the underlying texture
+    SDL_Texture* mTexture;
 
-	// Image dimensions
-	int mWidth;
-	int mHeight;
+    // Image dimensions
+    int mWidth;
+    int mHeight;
 };
