@@ -1,4 +1,7 @@
-# NathanPong
+# Pong
+
+## Overview
+This is a project aimed at exploring the SDL 2 library and core game mechanics like event loops and timers.
 
 ## Initial setup
 
